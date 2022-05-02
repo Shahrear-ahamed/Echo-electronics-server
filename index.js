@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const app = express();
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
@@ -39,7 +39,6 @@ const run = async () => {
       const jwToken = jwt.sign(email, process.env.ACCESS_TOKEN, {
         expiresIn: "1d",
       });
-      console.log(jwToken);
       res.send({ jwToken });
     });
 
@@ -51,6 +50,30 @@ const run = async () => {
       const query = {};
       const cursor = productCollection.find(query);
       const result = await cursor.limit(homeProduct).toArray();
+      res.send(result);
+    });
+    // get single item
+    app.get("/inventory/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await productCollection.findOne(query);
+      res.send(result);
+    });
+    // update single item
+    app.put("/inventory/:id", async (req, res) => {
+      const id = req.params.id;
+      const body = req.body;
+      const query = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updateData = {
+        $set: body,
+      };
+      console.log(body, id);
+      const result = await productCollection.updateOne(
+        query,
+        updateData,
+        options
+      );
       res.send(result);
     });
   } finally {
