@@ -52,6 +52,20 @@ const run = async () => {
       const result = await cursor.limit(homeProduct).toArray();
       res.send(result);
     });
+    // get all items for manage inventory page
+    app.get("/manageinventory", async (req, res) => {
+      const query = {};
+      const cursor = productCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+    // delete items
+    app.delete("/manageinventory/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await productCollection.deleteOne(query);
+      res.send(result);
+    });
     // get single item
     app.get("/inventory/:id", async (req, res) => {
       const id = req.params.id;
