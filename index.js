@@ -48,6 +48,16 @@ const run = async () => {
       .db("echoElectronics")
       .collection("agreementRegister");
 
+    /**
+     * ----------------------------------------------------
+     * ------------------------ HOLA ----------------------
+     *
+     *          Make json toke are from here
+     *
+     * ------------------------ HOLA ----------------------
+     * ----------------------------------------------------
+     */
+
     // get and check token
     app.post("/generatetoken", async (req, res) => {
       const email = req.body;
@@ -57,7 +67,15 @@ const run = async () => {
       res.send({ jwToken });
     });
 
-    // crud operations are here and make some api for this
+    /**
+     * ----------------------------------------------------
+     * ------------------------ HOLA ----------------------
+     *
+     *  crud operations are here and make some api for this
+     *
+     * ------------------------ HOLA ----------------------
+     * ----------------------------------------------------
+     */
 
     // get homepage items from here
     app.get("/homeitems", async (req, res) => {
@@ -65,13 +83,6 @@ const run = async () => {
       const query = {};
       const cursor = productCollection.find(query);
       const result = await cursor.limit(homeProduct).toArray();
-      res.send(result);
-    });
-    // get all items for manage inventory page and single person
-    app.get("/inventory", async (req, res) => {
-      const query = {};
-      const cursor = productCollection.find(query);
-      const result = await cursor.toArray();
       res.send(result);
     });
 
@@ -82,13 +93,15 @@ const run = async () => {
       res.send(result);
     });
 
-    // delete items
-    app.delete("/inventory/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: ObjectId(id) };
-      const result = await productCollection.deleteOne(query);
+    // get my items
+    app.get("/inventory",  async (req, res) => {
+      const email = req.query.email;
+      let query;
+      email ? (query = { email }) : (query = {});
+      const result = await productCollection.find(query).toArray();
       res.send(result);
     });
+
     // get single item
     app.get("/inventory/:id", async (req, res) => {
       const id = req.params.id;
@@ -96,6 +109,7 @@ const run = async () => {
       const result = await productCollection.findOne(query);
       res.send(result);
     });
+
     // update single item
     app.put("/inventory/:id", async (req, res) => {
       const id = req.params.id;
@@ -105,12 +119,19 @@ const run = async () => {
       const updateData = {
         $set: body,
       };
-      console.log(body, id);
       const result = await productCollection.updateOne(
         query,
         updateData,
         options
       );
+      res.send(result);
+    });
+
+    // delete items
+    app.delete("/inventory/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await productCollection.deleteOne(query);
       res.send(result);
     });
   } finally {
