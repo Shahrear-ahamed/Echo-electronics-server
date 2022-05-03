@@ -134,6 +134,18 @@ const run = async () => {
       const result = await productCollection.deleteOne(query);
       res.send(result);
     });
+
+    app.get("/singleuser", verifyToken, async (req, res) => {
+      const decodeEmail = req.decode.email;
+      const email = req.query.email;
+      if (decodeEmail === email) {
+        const query = { email };
+        const result = await productCollection.find(query).toArray();
+        res.send(result);
+      } else {
+        res.status(401).send("Forbidden Access");
+      }
+    });
   } finally {
     // await client.close();
   }
