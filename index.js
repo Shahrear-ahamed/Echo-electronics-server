@@ -94,12 +94,24 @@ const run = async () => {
     });
 
     // get my items
-    app.get("/inventory",  async (req, res) => {
+    app.get("/inventory", async (req, res) => {
       const email = req.query.email;
-      let query;
-      email ? (query = { email }) : (query = {});
+      const query = {};
       const result = await productCollection.find(query).toArray();
       res.send(result);
+    });
+
+    // get items and show by user email only
+    app.get("/singleuser", verifyToken, async (req, res) => {
+      const decodeEmail = req.decode.email;
+      const email = req.query.email;
+      if (decodeEmail === email) {
+        const query = { email };
+        const result = await productCollection.find(query).toArray();
+        res.send(result);
+      } else {
+        res.status(401).send("Forbidden Access");
+      }
     });
 
     // get single item
@@ -135,16 +147,11 @@ const run = async () => {
       res.send(result);
     });
 
-    app.get("/singleuser", verifyToken, async (req, res) => {
-      const decodeEmail = req.decode.email;
-      const email = req.query.email;
-      if (decodeEmail === email) {
-        const query = { email };
-        const result = await productCollection.find(query).toArray();
-        res.send(result);
-      } else {
-        res.status(401).send("Forbidden Access");
-      }
+    // get agreement data and save to database
+    app.post("/warehouseagreement", async (req, res) => {
+      const agreement = req.body;
+      const result = await agreementCollection.insertOne(agreement);
+      res.send(result);
     });
   } finally {
     // await client.close();
