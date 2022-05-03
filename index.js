@@ -10,6 +10,21 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+const verifyToken = (req, res, next) => {
+  const userToken = req.headers.authorization;
+  if (!userToken) {
+    return res.status(401).send({ message: "Unauthorized Access" });
+  }
+  const token = userToken.split(" ")[1];
+  jwt.verify(token, process.env.ACCESS_TOKEN, (err, decode) => {
+    if (err) {
+      return res.status(403).send({ message: "Forbidden Access" });
+    }
+    req.decode = decode;
+    next();
+  });
+};
+
 // add mongodb server
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.uceta.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
@@ -52,15 +67,23 @@ const run = async () => {
       const result = await cursor.limit(homeProduct).toArray();
       res.send(result);
     });
-    // get all items for manage inventory page
-    app.get("/manageinventory", async (req, res) => {
+    // get all items for manage inventory page and single person
+    app.get("/inventory", async (req, res) => {
       const query = {};
       const cursor = productCollection.find(query);
       const result = await cursor.toArray();
       res.send(result);
     });
+
+    // post product
+    app.post("/inventory", async (req, res) => {
+      const item = req.body;
+      const result = await productCollection.insertOne(item);
+      res.send(result);
+    });
+
     // delete items
-    app.delete("/manageinventory/:id", async (req, res) => {
+    app.delete("/inventory/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const result = await productCollection.deleteOne(query);
