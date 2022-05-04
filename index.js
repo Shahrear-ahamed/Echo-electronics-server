@@ -108,12 +108,9 @@ const run = async () => {
 
     // get my items
     app.get("/inventory", async (req, res) => {
-      const email = req.query.email;
       const items = parseInt(req.query.items);
       const page = parseInt(req.query.page);
-      // find product by user item and all item
-      let query;
-      email ? (query = { email }) : (query = {});
+      const query = {};
       const result = await productCollection
         .find(query)
         .skip(items * page)
@@ -126,9 +123,15 @@ const run = async () => {
     app.get("/singleuser", verifyToken, async (req, res) => {
       const decodeEmail = req.decode.email;
       const email = req.query.email;
+      const items = parseInt(req.query.items);
+      const page = parseInt(req.query.page);
       if (decodeEmail === email) {
         const query = { email };
-        const result = await productCollection.find(query).toArray();
+        const result = await productCollection
+          .find(query)
+          .skip(items * page)
+          .limit(items)
+          .toArray();
         res.send(result);
       } else {
         res.status(401).send("Forbidden Access");
