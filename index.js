@@ -99,6 +99,13 @@ const run = async () => {
       res.send(result);
     });
 
+    app.get("/userstoredata", async (req, res) => {
+      const email = req.query.email;
+      const query = { email };
+      const result = await productCollection.find(query).toArray();
+      res.send({ result: result.length });
+    });
+
     // get my items
     app.get("/inventory", async (req, res) => {
       const email = req.query.email;
