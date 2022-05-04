@@ -86,6 +86,12 @@ const run = async () => {
       res.send(result);
     });
 
+    // get total product in warehouse
+    app.get("/inventorycount", async (req, res) => {
+      const totalProduct = await productCollection.estimatedDocumentCount();
+      res.send({ totalProduct });
+    });
+
     // post product
     app.post("/inventory", async (req, res) => {
       const item = req.body;
@@ -96,8 +102,16 @@ const run = async () => {
     // get my items
     app.get("/inventory", async (req, res) => {
       const email = req.query.email;
-      const query = {};
-      const result = await productCollection.find(query).toArray();
+      const items = parseInt(req.query.items);
+      const page = parseInt(req.query.page);
+      // find product by user item and all item
+      let query;
+      email ? (query = { email }) : (query = {});
+      const result = await productCollection
+        .find(query)
+        .skip(items * page)
+        .limit(items)
+        .toArray();
       res.send(result);
     });
 
