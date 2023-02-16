@@ -1,0 +1,80 @@
+{
+    "workbench.colorTheme": "Learn with Sumit Theme - Dracula version",
+    "files.autoSave": "off",
+    "editor.wordWrap": "on",
+    "editor.fontFamily": " 'Cascadia Code', 'CascadiaCodePL', Consolas",
+    "editor.fontLigatures": "'ss01'",
+    "editor.lineHeight": 1.4,
+    "editor.fontWeight": "350", // adjust for desired weight
+    "editor.tokenColorCustomizations": {
+      "textMateRules": [
+        {
+          "scope": [
+            "comment",
+            "entity.name.type.class",
+            "keyword",
+            "storage.modifier",
+            "storage.type",
+            "support.class.builtin",
+            "keyword.control",
+            "constant.language",
+            "entity.other.attribute-name",
+            "entity.name.method",
+            // "entity.name.tag",
+            "string.quoted"
+          ],
+          "settings": {
+            "fontStyle": "italic"
+          }
+        }
+      ]
+    },
+    "security.workspace.trust.untrustedFiles": "open",
+    "workbench.iconTheme": "vscode-icons",
+    "editor.linkedEditing": true,
+    "[html]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "liveServer.settings.donotShowInfoMsg": true,
+    "explorer.confirmDelete": false,
+    "[json]": {
+      "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "[javascriptreact]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "editor.stickyScroll.enabled": true,
+    "editor.stickyScroll.maxLineCount": 10,
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "editor.guides.bracketPairs": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "reactSnippets.settings.prettierEnabled": true,
+    "prettier.bracketSameLine": true,
+    "emmet.includeLanguages": {
+      "javascript": "javascriptreact"
+    },
+    "explorer.confirmDragAndDrop": false,
+    "vsicons.dontShowNewVersionMessage": true,
+    "editor.rulers": [],
+    "editor.fontSize": 15,
+    "editor.codeActionsOnSave": {
+    
+    
+    
+    },
+    "workbench.startupEditor": "none",
+    "terminal.integrated.defaultProfile.windows": "Git Bash",
+    "editor.inlineSuggest.enabled": true,
+    "editor.accessibilitySupport": "on",
+    "cSpell.userWords": [
+      "ahamed",
+      "MERN",
+      "shahrear"
+    ]
+  }

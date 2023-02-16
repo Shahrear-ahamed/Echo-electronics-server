@@ -9,6 +9,7 @@ const mongoSanitize = require("express-mongo-sanitize");
 const rateLimit = require("express-rate-limit");
 
 // Routes imports
+const userRouter = require("./routers/v2/user.router");
 
 // Middleware
 app.use(cors());
@@ -31,12 +32,14 @@ app.use(
   })
 );
 
+// other versions router are here
+
+app.use("/api/v2/user", userRouter);
+
 // Routes
 app.use("/", (req, res) => {
   res.status(200).json({ status: "success", message: "Welcome to the API" });
 });
-
-// other versions router are here
 
 // Error handling
 app.use("*", (req, res) => {
