@@ -1,5 +1,5 @@
 const { Schema, model } = require("mongoose");
-const { ObjectId } = Schema.Types;
+const bcrypt = require("bcrypt");
 
 const userSchema = new Schema(
   {
@@ -41,9 +41,13 @@ userSchema.pre("save", function (next) {
     throw new Error("Password and Confirm Password must be the same");
   }
 
+  // make hash password
+  const hashed = bcrypt.hashSync(this.password, 10);
+
+  this.password = hashed;
   this.confirmPassword = undefined;
 
-  next();
+    next();
 });
 
 const User = model("User", userSchema);
