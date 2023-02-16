@@ -37,9 +37,8 @@ const userSchema = new Schema(
 userSchema.pre("save", function (next) {
   this.role = "user";
 
-  if (this.password !== this.confirmPassword) {
+  if (this.password !== this.confirmPassword)
     throw new Error("Password and Confirm Password must be the same");
-  }
 
   // make hash password
   const hashed = bcrypt.hashSync(this.password, 10);
@@ -47,8 +46,16 @@ userSchema.pre("save", function (next) {
   this.password = hashed;
   this.confirmPassword = undefined;
 
-    next();
+  next();
 });
+
+// compare password
+userSchema.methods.comparePassword = async function (
+  rowPassword,
+  hashPassword
+) {
+  return await bcrypt.compare(rowPassword, hashPassword);
+};
 
 const User = model("User", userSchema);
 
