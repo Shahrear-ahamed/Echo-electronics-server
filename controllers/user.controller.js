@@ -1,8 +1,12 @@
 // service are here
-const userService = require("../services/v2/user.service");
+const {
+  createUserService,
+  findUserEmailService,
+  findUserGoogleService,
+} = require("../services/v2/user.service");
 
 // token are here
-const { createToken, verifyToken } = require("../middlewares/jwtToken");
+const { createToken } = require("../middlewares/jwtToken");
 
 const userController = {};
 
@@ -10,7 +14,7 @@ userController.createUser = async (req, res) => {
   try {
     const userData = req.body;
 
-    const result = await userService.createUserService(userData);
+    const result = await createUserService(userData);
 
     // if user already exist throw error
     if (!result) throw new Error("User already exist");
@@ -28,7 +32,7 @@ userController.loginUser = async (req, res) => {
     const userEmail = req.body.email;
     const userPassword = req.body.password;
 
-    const result = await userService.loginUserService(userEmail);
+    const result = await findUserEmailService(userEmail);
 
     // if not user found throw error
     if (!result) throw new Error("User not found");
@@ -47,6 +51,31 @@ userController.loginUser = async (req, res) => {
     res
       .status(200)
       .json({ status: "success", message: "User logged in", token });
+  } catch (err) {
+    res.status(500).json({ status: "failed", message: err.message });
+  }
+};
+
+userController.authGoogleUser = async (req, res) => {
+  try {
+    const user = req.user;
+
+    const result = await findUserGoogleService(user.sub, user.email);
+
+    // if user already exist login user
+    if (result) {
+      const token = await createToken(result);
+      return res
+        .status(200)
+        .json({ status: "success", message: "User logged in", token });
+    }
+
+    // if user not exist create user
+    
+
+    res
+      .status(200)
+      .json({ status: "success", message: "Google Auth Done", data: req.user });
   } catch (err) {
     res.status(500).json({ status: "failed", message: err.message });
   }

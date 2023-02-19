@@ -10,6 +10,7 @@ const rateLimit = require("express-rate-limit");
 
 // Routes imports
 const userRouter = require("./routers/v2/user.router");
+const OAuthRouter = require("./routers/v2/OAuth.router");
 
 // Middleware
 app.use(cors());
@@ -35,6 +36,7 @@ app.use(
 // other versions router are here
 
 app.use("/api/v2/user", userRouter);
+app.use("/api/v2/auth/", OAuthRouter);
 
 // Routes
 app.use("/", (req, res) => {

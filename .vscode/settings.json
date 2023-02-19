@@ -1,6 +1,6 @@
 {
     "workbench.colorTheme": "Learn with Sumit Theme - Dracula version",
-    "files.autoSave": "off",
+    "files.autoSave": "onWindowChange",
     "editor.wordWrap": "on",
     "editor.fontFamily": " 'Cascadia Code', 'CascadiaCodePL', Consolas",
     "editor.fontLigatures": "'ss01'",
