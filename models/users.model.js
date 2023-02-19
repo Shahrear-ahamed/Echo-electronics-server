@@ -3,6 +3,10 @@ const bcrypt = require("bcrypt");
 
 const userSchema = new Schema(
   {
+    authId: {
+      type: String,
+      default: null,
+    },
     name: {
       type: String,
       trim: true,
@@ -18,16 +22,30 @@ const userSchema = new Schema(
       type: String,
       default: "user",
     },
+    provider: {
+      type: String,
+      trim: true,
+      default: "local",
+    },
+    photo: {
+      type: String,
+      trim: true,
+      default: null,
+      minLength: 0,
+      maxLength: 1000,
+    },
+    verified: {
+      type: Boolean,
+      default: false,
+    },
     password: {
       type: String,
       trim: true,
-      required: [true, "Confirm password must be required"],
       minLength: 8,
     },
     confirmPassword: {
       type: String,
       trim: true,
-      required: [true, "Confirm password must be required"],
       minLength: 8,
     },
   },
@@ -37,14 +55,22 @@ const userSchema = new Schema(
 userSchema.pre("save", function (next) {
   this.role = "user";
 
-  if (this.password !== this.confirmPassword)
-    throw new Error("Password and Confirm Password must be the same");
+  // if provider is local then check password and confirm password
+  if (this.provider === "local") {
+    // check password and confirm password
 
-  // make hash password
-  const hashed = bcrypt.hashSync(this.password, 10);
+    if (!this.password || !this.confirmPassword)
+      throw new Error("Password must be required");
 
-  this.password = hashed;
-  this.confirmPassword = undefined;
+    if (this.password !== this.confirmPassword)
+      throw new Error("Password and Confirm Password must be the same");
+
+    // make hash password
+    const hashed = bcrypt.hashSync(this.password, 10);
+
+    this.password = hashed;
+    this.confirmPassword = undefined;
+  }
 
   next();
 });

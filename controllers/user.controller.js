@@ -3,6 +3,7 @@ const {
   createUserService,
   findUserEmailService,
   findUserGoogleService,
+  createUserGoogleService,
 } = require("../services/v2/user.service");
 
 // token are here
@@ -21,7 +22,11 @@ userController.createUser = async (req, res) => {
 
     const token = await createToken(result);
 
-    res.status(200).json({ status: "success", message: "User created", token });
+    res.status(200).json({
+      status: "success",
+      message: "User created",
+      token: "Bearer " + token,
+    });
   } catch (err) {
     res.status(500).json({ status: "failed", message: err.message });
   }
@@ -48,9 +53,11 @@ userController.loginUser = async (req, res) => {
     // create token
     const token = await createToken(result);
 
-    res
-      .status(200)
-      .json({ status: "success", message: "User logged in", token });
+    res.status(200).json({
+      status: "success",
+      message: "User logged in",
+      token: "Bearer " + token,
+    });
   } catch (err) {
     res.status(500).json({ status: "failed", message: err.message });
   }
@@ -60,22 +67,32 @@ userController.authGoogleUser = async (req, res) => {
   try {
     const user = req.user;
 
-    const result = await findUserGoogleService(user.sub, user.email);
+    const result = await findUserGoogleService(user.authId, user.email);
 
     // if user already exist login user
     if (result) {
       const token = await createToken(result);
-      return res
-        .status(200)
-        .json({ status: "success", message: "User logged in", token });
+      return res.status(200).json({
+        status: "success",
+        message: "User logged in",
+        token: "Bearer " + token,
+      });
     }
 
     // if user not exist create user
-    
+    const createdUser = await createUserGoogleService(user);
+
+    if (!createdUser) throw new Error("Something occurred while creating user");
+
+    const token = await createToken(createdUser);
 
     res
       .status(200)
-      .json({ status: "success", message: "Google Auth Done", data: req.user });
+      .json({
+        status: "success",
+        message: "Google Auth Done",
+        token: "Bearer " + token,
+      });
   } catch (err) {
     res.status(500).json({ status: "failed", message: err.message });
   }

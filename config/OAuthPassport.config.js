@@ -10,9 +10,10 @@ const googleStrategy = new GoogleStrategy(
   },
   (accessToken, refreshToken, profile, cb) => {
     const userDetails = {
-      id: profile?.id,
+      authId: profile?.id,
       name: profile?.displayName,
       provider: profile?.provider,
+      verified: profile?.emails[0]?.verified,
       email: profile?.emails[0]?.value,
       photo: profile?.photos[0]?.value,
     };
