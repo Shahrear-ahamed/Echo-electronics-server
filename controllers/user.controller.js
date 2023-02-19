@@ -1,3 +1,4 @@
+const User = require("../models/users.model");
 // service are here
 const {
   createUserService,
@@ -22,11 +23,7 @@ userController.createUser = async (req, res) => {
 
     const token = await createToken(result);
 
-    res.status(200).json({
-      status: "success",
-      message: "User created",
-      token: "Bearer " + token,
-    });
+    res.status(200).json({ status: "success", message: "User created", token });
   } catch (err) {
     res.status(500).json({ status: "failed", message: err.message });
   }
@@ -37,7 +34,7 @@ userController.loginUser = async (req, res) => {
     const userEmail = req.body.email;
     const userPassword = req.body.password;
 
-    const result = await findUserEmailService(userEmail);
+    const result = await findUserEmailService(userEmail, User);
 
     // if not user found throw error
     if (!result) throw new Error("User not found");
@@ -53,11 +50,9 @@ userController.loginUser = async (req, res) => {
     // create token
     const token = await createToken(result);
 
-    res.status(200).json({
-      status: "success",
-      message: "User logged in",
-      token: "Bearer " + token,
-    });
+    res
+      .status(200)
+      .json({ status: "success", message: "User logged in", token });
   } catch (err) {
     res.status(500).json({ status: "failed", message: err.message });
   }
@@ -67,16 +62,19 @@ userController.authGoogleUser = async (req, res) => {
   try {
     const user = req.user;
 
-    const result = await findUserGoogleService(user.authId, user.email);
+    const result = await findUserGoogleService(user.email);
+
+    // if user already another provider user then return error
+    if (result.provider !== "google") {
+      throw new Error("User already exist");
+    }
 
     // if user already exist login user
-    if (result) {
+    if (result.provider === "google") {
       const token = await createToken(result);
-      return res.status(200).json({
-        status: "success",
-        message: "User logged in",
-        token: "Bearer " + token,
-      });
+      return res
+        .status(200)
+        .json({ status: "success", message: "User logged in", token });
     }
 
     // if user not exist create user
@@ -88,11 +86,7 @@ userController.authGoogleUser = async (req, res) => {
 
     res
       .status(200)
-      .json({
-        status: "success",
-        message: "Google Auth Done",
-        token: "Bearer " + token,
-      });
+      .json({ status: "success", message: "Google Auth Done", token });
   } catch (err) {
     res.status(500).json({ status: "failed", message: err.message });
   }

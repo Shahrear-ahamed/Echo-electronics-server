@@ -8,12 +8,12 @@ userService.createUserService = async (userData) => {
 };
 
 userService.findUserEmailService = async (email) => {
-  return await User.aggregate([{ $match: { email } }]);
+  return await User.findOne({ email });
 };
 
 // make auth google service
-userService.findUserGoogleService = async (authId, email) => {
-  return await User.findOne({ authId, email });
+userService.findUserGoogleService = async (email) => {
+  return await User.findOne({ email });
 };
 
 userService.createUserGoogleService = async (userData) => {

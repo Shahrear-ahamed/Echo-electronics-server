@@ -8,7 +8,9 @@ jwtToken.createToken = (user) => {
     email: user?.email,
   };
 
-  return jwt.sign(payload, process.env.JWT_TOKEN, { expiresIn: "7d" });
+  const token = jwt.sign(payload, process.env.JWT_TOKEN, { expiresIn: "7d" });
+
+  return `Bearer ${token}`;
 };
 
 jwtToken.verifyToken = (token) => {
