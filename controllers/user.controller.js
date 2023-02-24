@@ -1,4 +1,3 @@
-const User = require("../models/users.model");
 // service are here
 const {
   createUserService,
@@ -35,7 +34,7 @@ userController.loginUser = async (req, res) => {
     const userEmail = req.body.email;
     const userPassword = req.body.password;
 
-    const result = await findUserEmailService(userEmail, User);
+    const result = await findUserEmailService(userEmail);
 
     // if not user found throw error
     if (!result) throw new Error("User not found");
