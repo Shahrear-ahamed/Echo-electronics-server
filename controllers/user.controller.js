@@ -9,6 +9,7 @@ const {
 
 // token are here
 const { createToken } = require("../middlewares/jwtToken");
+const verifyPassword = require("../utils/verifyPassword");
 
 const userController = {};
 
@@ -39,10 +40,8 @@ userController.loginUser = async (req, res) => {
     // if not user found throw error
     if (!result) throw new Error("User not found");
 
-    const compared = await result.comparePassword(
-      userPassword,
-      result.password
-    );
+    const compared = await verifyPassword(userPassword, result.password);
+
 
     // if password not match throw error
     if (!compared) throw new Error("Email or Password not match");
