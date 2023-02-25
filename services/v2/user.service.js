@@ -13,10 +13,11 @@ userService.findUserService = async (email) => {
   return users[0];
 };
 
-userService.findUserByEmailService = async (email) => {
+userService.findUserForInternalService = async (id) => {
+  const userId = new Types.ObjectId(id);
   const users = await User.aggregate([
-    { $match: { email } },
-    { $project: { password: 0, authId: 0, createdAt: 0, updatedAt: 0 } },
+    { $match: { _id: userId } },
+    { $project: { authId: 0, createdAt: 0, updatedAt: 0 } },
   ]);
   return users[0];
 };

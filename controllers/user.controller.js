@@ -4,12 +4,13 @@ const {
   updateUserService,
   createUserService,
   findUserByIdService,
-  findUserByEmailService,
+  findUserForInternalService,
 } = require("../services/v2/user.service");
 
 // token are here
 const { createToken } = require("../middlewares/jwtToken");
 const verifyPassword = require("../utils/verifyPassword");
+const hashPassword = require("../utils/hashPassword");
 
 const userController = {};
 
@@ -123,6 +124,44 @@ userController.updateUserProfile = async (req, res) => {
     res
       .status(200)
       .json({ status: "success", message: "User profile updated", result });
+  } catch (err) {
+    res.status(500).json({ status: "failed", message: err.message });
+  }
+};
+
+userController.updateUserPassword = async (req, res) => {
+  try {
+    const id = req.decode.id;
+    const userData = req.body;
+
+    // security layer 1
+    // find user details for security purpose and check if user data are available
+    const user = await findUserForInternalService(id);
+    if (!user) throw new Error("authorized user not found");
+
+    // security layer 2
+    // check if old password is correct
+    const compared = await verifyPassword(userData.oldPassword, user.password);
+    if (!compared) throw new Error("Password does not match");
+
+    // security layer 3
+    // check if new password and confirm password are same
+    if (userData.newPassword !== userData.newConfirmPassword)
+      throw new Error("new password and new confirm password does not match");
+
+    // now change user credentials with hashing password
+
+    const hashedPassword = await hashPassword(userData.newPassword);
+
+    const result = await updateUserService(user._id, {
+      password: hashedPassword,
+    });
+
+    if (result.modifiedCount === 0) throw new Error("password not updated");
+
+    res
+      .status(200)
+      .json({ status: "success", message: "User password updated", result });
   } catch (err) {
     res.status(500).json({ status: "failed", message: err.message });
   }

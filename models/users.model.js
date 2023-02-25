@@ -1,5 +1,5 @@
 const { Schema, model } = require("mongoose");
-const bcrypt = require("bcrypt");
+const hashPassword = require("../utils/hashPassword");
 
 const userSchema = new Schema(
   {
@@ -55,7 +55,7 @@ const userSchema = new Schema(
   { timestamps: true, versionKey: false }
 );
 
-userSchema.pre("save", function (next) {
+userSchema.pre("save", async function (next) {
   this.role = "user";
 
   // if provider is local then check password and confirm password
@@ -69,7 +69,7 @@ userSchema.pre("save", function (next) {
       throw new Error("Password and Confirm Password must be the same");
 
     // make hash password
-    const hashed = bcrypt.hashSync(this.password, 10);
+    const hashed = await hashPassword(this.password);
 
     this.password = hashed;
     this.confirmPassword = undefined;
