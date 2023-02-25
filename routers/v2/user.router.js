@@ -1,10 +1,15 @@
 const router = require("express").Router();
+const { verifyToken } = require("../../middlewares/jwtToken");
 
 // import controllers
-const { createUser, loginUser } = require("../../controllers/user.controller");
+const {
+  createUser,
+  loginUser,
+  getUserProfile,
+} = require("../../controllers/user.controller");
 
 // routes
-router.post("/login", loginUser);
+router.get("/", verifyToken, getUserProfile).post("/login", loginUser);
 router.post("/register", createUser);
 
 module.exports = router;

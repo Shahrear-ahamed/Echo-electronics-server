@@ -7,19 +7,17 @@ userService.createUserService = async (userData) => {
   return await User.create(userData);
 };
 
-userService.findUserEmailService = async (email) => {
+userService.findUserService = async (email) => {
   const users = await User.aggregate([{ $match: { email } }]);
   return users[0];
 };
 
-// make auth google service
-userService.findUserGoogleService = async (email) => {
-  const users = await User.aggregate([{ $match: { email } }]);
+userService.findUserByEmailService = async (email) => {
+  const users = await User.aggregate([
+    { $match: { email } },
+    { $project: { password: 0, authId: 0, createdAt: 0, updatedAt: 0 } },
+  ]);
   return users[0];
-};
-
-userService.createUserGoogleService = async (userData) => {
-  return await User.create(userData);
 };
 
 module.exports = userService;

@@ -1,9 +1,8 @@
 // service are here
 const {
   createUserService,
-  findUserEmailService,
-  findUserGoogleService,
-  createUserGoogleService,
+  findUserService,
+  findUserByEmailService,
 } = require("../services/v2/user.service");
 
 // token are here
@@ -34,13 +33,12 @@ userController.loginUser = async (req, res) => {
     const userEmail = req.body.email;
     const userPassword = req.body.password;
 
-    const result = await findUserEmailService(userEmail);
+    const result = await findUserService(userEmail);
 
     // if not user found throw error
     if (!result) throw new Error("User not found");
 
     const compared = await verifyPassword(userPassword, result.password);
-
 
     // if password not match throw error
     if (!compared) throw new Error("Email or Password not match");
@@ -60,7 +58,7 @@ userController.authGoogleUser = async (req, res) => {
   try {
     const user = req.user;
 
-    const result = await findUserGoogleService(user.email);
+    const result = await findUserService(user.email);
 
     // if user already another provider user then return error
     if (result.provider !== "google") {
@@ -76,7 +74,7 @@ userController.authGoogleUser = async (req, res) => {
     }
 
     // if user not exist create user
-    const createdUser = await createUserGoogleService(user);
+    const createdUser = await createUserService(user);
 
     if (!createdUser) throw new Error("Something occurred while creating user");
 
@@ -85,6 +83,16 @@ userController.authGoogleUser = async (req, res) => {
     res
       .status(200)
       .json({ status: "success", message: "Google Auth Done", token });
+  } catch (err) {
+    res.status(500).json({ status: "failed", message: err.message });
+  }
+};
+
+userController.getUserProfile = async (req, res) => {
+  try {
+    const user = await findUserByEmailService(req.decode.email);
+
+    res.status(200).json({ status: "success", message: "User profile", user });
   } catch (err) {
     res.status(500).json({ status: "failed", message: err.message });
   }
