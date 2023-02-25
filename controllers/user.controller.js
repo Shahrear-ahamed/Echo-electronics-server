@@ -1,7 +1,9 @@
 // service are here
 const {
-  createUserService,
   findUserService,
+  updateUserService,
+  createUserService,
+  findUserByIdService,
   findUserByEmailService,
 } = require("../services/v2/user.service");
 
@@ -90,9 +92,37 @@ userController.authGoogleUser = async (req, res) => {
 
 userController.getUserProfile = async (req, res) => {
   try {
-    const user = await findUserByEmailService(req.decode.email);
+    const id = req.decode.id;
+    const user = await findUserByIdService(id);
+
+    if (!user) throw new Error("User not found");
 
     res.status(200).json({ status: "success", message: "User profile", user });
+  } catch (err) {
+    res.status(500).json({ status: "failed", message: err.message });
+  }
+};
+
+userController.updateUserProfile = async (req, res) => {
+  try {
+    const id = req.decode.id;
+    const userData = req.body;
+
+    // security layer 1
+    // find user details for security purpose and check if user data are available
+    const user = await findUserByIdService(id);
+    if (!user) throw new Error("User not found");
+
+    // now change user credentials
+    // user cant change email, authId, provider
+
+    const result = await updateUserService(user._id, userData);
+
+    if (result.modifiedCount === 0) throw new Error("User not updated");
+
+    res
+      .status(200)
+      .json({ status: "success", message: "User profile updated", result });
   } catch (err) {
     res.status(500).json({ status: "failed", message: err.message });
   }

@@ -6,6 +6,7 @@ const userSchema = new Schema(
     authId: {
       type: String,
       default: null,
+      immutable: true,
     },
     name: {
       type: String,
@@ -15,6 +16,7 @@ const userSchema = new Schema(
     email: {
       type: String,
       trim: true,
+      immutable: true,
       unique: [true, "email should be unique"],
       required: [true, "Email must be required"],
     },
@@ -26,6 +28,7 @@ const userSchema = new Schema(
       type: String,
       trim: true,
       default: "local",
+      immutable: true,
     },
     photo: {
       type: String,
