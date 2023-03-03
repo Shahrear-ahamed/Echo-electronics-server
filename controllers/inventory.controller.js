@@ -5,6 +5,7 @@ const {
   deleteProductService,
   updateProductService,
   getSingleProductService,
+  getMyProductsService,
 } = require("../services/v2/inventory.service");
 
 // user service import
@@ -22,6 +23,24 @@ inventoryController.getProducts = async (req, res) => {
     const result = await getProductsService();
 
     // check products has or not
+    res.status(200).json({ status: "success", result });
+  } catch (err) {
+    res.status(500).json({ status: "failed", message: err.message });
+  }
+};
+
+// get my or single user items
+inventoryController.myProducts = async (req, res) => {
+  try {
+    const email = req.params.email;
+    const decodeEmail = req.decode.email;
+
+    // check user is valid or not
+    if (email !== decodeEmail) throw new Error("You are not authorized");
+
+    const result = await getMyProductsService(email);
+    if (!result) throw new Error("No products found");
+
     res.status(200).json({ status: "success", result });
   } catch (err) {
     res.status(500).json({ status: "failed", message: err.message });
@@ -93,6 +112,7 @@ inventoryController.updateProduct = async (req, res) => {
   }
 };
 
+// delete single item
 inventoryController.deleteProduct = async (req, res) => {
   try {
     const id = req.params.id;

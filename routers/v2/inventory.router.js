@@ -1,6 +1,7 @@
 const router = require("express").Router();
 
 const {
+  myProducts,
   getProducts,
   createProduct,
   updateProduct,
@@ -15,6 +16,12 @@ const { verifyToken } = require("../../middlewares/jwtToken");
  */
 
 router.route("/products", verifyToken).get(getProducts).post(createProduct);
+
+/**
+ * @route GET /api/v2/products/:email - get single product
+ */
+
+router.route("/products/:email", verifyToken).get(myProducts);
 
 /**
  * @route GET /api/v2/products/:id - get single product
