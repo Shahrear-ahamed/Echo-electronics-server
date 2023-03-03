@@ -3,6 +3,8 @@ const router = require("express").Router();
 const {
   getProducts,
   createProduct,
+  updateProduct,
+  deleteProduct,
   getSingleProduct,
 } = require("../../controllers/inventory.controller");
 const { verifyToken } = require("../../middlewares/jwtToken");
@@ -23,7 +25,7 @@ router.route("/products", verifyToken).get(getProducts).post(createProduct);
 router
   .route("/products/:id", verifyToken)
   .get(getSingleProduct)
-  .patch()
-  .delete();
+  .patch(updateProduct)
+  .delete(deleteProduct);
 
 module.exports = router;

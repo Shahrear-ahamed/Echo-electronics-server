@@ -2,6 +2,7 @@
 const {
   getProductsService,
   createProductService,
+  deleteProductService,
   updateProductService,
   getSingleProductService,
 } = require("../services/v2/inventory.service");
@@ -83,6 +84,33 @@ inventoryController.updateProduct = async (req, res) => {
 
     // update product
     const result = await updateProductService(id, itemDetails);
+
+    if (result.modifiedCount === 0) throw new Error("product are not updated");
+
+    res.status(200).json({ status: "success", result });
+  } catch (err) {
+    res.status(500).json({ status: "failed", message: err.message });
+  }
+};
+
+inventoryController.deleteProduct = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const userId = req.decode.id;
+    const userMail = req.decode.email;
+
+    // check user is valid or not
+    const user = await findUserByIdAndMailService(userId, userMail);
+    if (!user) throw new Error("You are not authorized to delete this product");
+
+    // check product has or not
+    const product = await getSingleProductService(id);
+    if (!product) throw new Error("product not found");
+
+    // delete product
+    const result = await deleteProductService(id);
+
+    if (result.deletedCount === 0) throw new Error("product are not deleted");
 
     res.status(200).json({ status: "success", result });
   } catch (err) {

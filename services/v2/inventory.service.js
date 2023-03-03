@@ -16,7 +16,13 @@ inventoryService.createProductService = async (item) => {
 };
 
 inventoryService.updateProductService = async (id, data) => {
-  return await Product.updateOne();
+  return await Product.updateOne({ _id: id }, data, {
+    runValidators: true,
+  });
+};
+
+inventoryService.deleteProductService = async (id) => {
+  return await Product.deleteOne({ _id: id });
 };
 
 module.exports = inventoryService;
