@@ -15,4 +15,8 @@ inventoryService.createProductService = async (item) => {
   return await Product.create(item);
 };
 
+inventoryService.updateProductService = async (id, data) => {
+  return await Product.updateOne();
+};
+
 module.exports = inventoryService;

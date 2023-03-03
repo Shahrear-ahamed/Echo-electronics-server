@@ -6,6 +6,7 @@ jwtToken.createToken = (user) => {
   const payload = {
     id: user?._id,
     role: user?.role,
+    email: user?.email,
   };
 
   const token = jwt.sign(payload, process.env.JWT_SECRET, {

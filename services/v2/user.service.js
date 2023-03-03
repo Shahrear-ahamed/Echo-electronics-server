@@ -1,4 +1,4 @@
-const User = require("../../models/users.model");
+const User = require("../../models/Users.model");
 const { Types } = require("mongoose");
 
 const userService = {};
@@ -28,6 +28,12 @@ userService.findUserByIdService = async (id) => {
     { $match: { _id: userId } },
     { $project: { password: 0, authId: 0, createdAt: 0, updatedAt: 0 } },
   ]);
+  return users[0];
+};
+
+userService.findUserByAuthIdService = async (authId, email) => {
+  const userId = new Types.ObjectId(authId);
+  const users = await User.aggregate([{ $match: { _id: userId, email } }]);
   return users[0];
 };
 

@@ -2,10 +2,17 @@
 const {
   getProductsService,
   createProductService,
+  updateProductService,
   getSingleProductService,
 } = require("../services/v2/inventory.service");
-const { findUserByIdService } = require("../services/v2/user.service");
 
+// user service import
+const {
+  findUserByIdService,
+  findUserByIdAndMailService,
+} = require("../services/v2/user.service");
+
+// inventory controller object
 const inventoryController = {};
 
 // get all items
@@ -53,6 +60,31 @@ inventoryController.createProduct = async (req, res) => {
     if (!result) throw new Error("product are not stored");
 
     res.status(201).json({ status: "success", result });
+  } catch (err) {
+    res.status(500).json({ status: "failed", message: err.message });
+  }
+};
+
+// update single item
+inventoryController.updateProduct = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const itemDetails = req.body;
+    const userId = req.decode.id;
+    const userMail = req.decode.email;
+
+    // check user is valid or not
+    const user = await findUserByIdAndMailService(userId, userMail);
+    if (!user) throw new Error("You are not authorized to update this product");
+
+    // check product has or not
+    const product = await getSingleProductService(id);
+    if (!product) throw new Error("product not found");
+
+    // update product
+    const result = await updateProductService(id, itemDetails);
+
+    res.status(200).json({ status: "success", result });
   } catch (err) {
     res.status(500).json({ status: "failed", message: err.message });
   }
