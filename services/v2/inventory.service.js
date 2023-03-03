@@ -3,9 +3,15 @@ const Product = require("../../models/Products.model");
 
 const inventoryService = {};
 
-inventoryService.getInventory = async () => {};
+inventoryService.getProductsService = async () => {
+  return await Product.aggregate([]);
+};
 
-inventoryService.createItem = async (item) => {
+inventoryService.getSingleProductService = async (id) => {
+  return await Product.aggregate([{ $match: { _id: id } }]);
+};
+
+inventoryService.createProductService = async (item) => {
   return await Product.create(item);
 };
 

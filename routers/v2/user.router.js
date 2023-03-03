@@ -13,7 +13,7 @@ const {
 // routes
 router.get("/", verifyToken, getUserProfile).post("/login", loginUser);
 router.post("/register", createUser);
-router.post("/updateProfile", verifyToken, updateUserProfile);
-router.post("/updatePassword", verifyToken, updateUserPassword);
+router.post("/profile", verifyToken, updateUserProfile);
+router.post("/password", verifyToken, updateUserPassword);
 
 module.exports = router;

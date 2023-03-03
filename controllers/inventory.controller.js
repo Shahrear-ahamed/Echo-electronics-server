@@ -1,16 +1,46 @@
 // inventory service import
-const { createItem } = require("../services/v2/inventory.service");
+const {
+  getProductsService,
+  createProductService,
+  getSingleProductService,
+} = require("../services/v2/inventory.service");
 const { findUserByIdService } = require("../services/v2/user.service");
 
 const inventoryController = {};
 
+// get all items
+inventoryController.getProducts = async (req, res) => {
+  try {
+    const result = await getProductsService();
+
+    // check products has or not
+    res.status(200).json({ status: "success", result });
+  } catch (err) {
+    res.status(500).json({ status: "failed", message: err.message });
+  }
+};
+
+// get single item
+inventoryController.getSingleProduct = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const result = await getSingleProductService(id);
+
+    // check product has or not
+    if (!result) throw new Error("product not found");
+
+    res.status(200).json({ status: "success", result });
+  } catch (err) {
+    res.status(500).json({ status: "failed", message: err.message });
+  }
+};
+
 // create item
-inventoryController.createItem = async (req, res) => {
+inventoryController.createProduct = async (req, res) => {
   try {
     const itemDetails = req.body;
     const id = req.decode.id;
 
-    console.log("itemDetails");
     // find inventory owner
     const user = await findUserByIdService(id);
     if (!user) throw new Error("User not found");
@@ -18,7 +48,7 @@ inventoryController.createItem = async (req, res) => {
     // add inventory owner to item
     delete itemDetails.owner;
     const product = { ...itemDetails, owner: user._id };
-    const result = await createItem(product);
+    const result = await createProductService(product);
 
     if (!result) throw new Error("product are not stored");
 
