@@ -14,7 +14,7 @@ const { verifyToken } = require("../../middlewares/jwtToken");
  * @route POST  /api/v2/products - create or add new product
  */
 
-router.route("/").get(getProducts).post(createProduct);
+router.route("/").get(getProducts).post(verifyToken, createProduct);
 
 /**
  * @route GET /api/v2/products/:id - get single product
@@ -23,9 +23,9 @@ router.route("/").get(getProducts).post(createProduct);
  */
 
 router
-  .route("/:id", verifyToken)
+  .route("/:id")
   .get(getSingleProduct)
-  .patch(updateProduct)
-  .delete(deleteProduct);
+  .patch(verifyToken, updateProduct)
+  .delete(verifyToken, deleteProduct);
 
 module.exports = router;

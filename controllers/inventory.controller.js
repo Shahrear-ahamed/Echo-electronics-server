@@ -5,7 +5,6 @@ const {
   deleteProductService,
   updateProductService,
   getSingleProductService,
-  getMyProductsService,
 } = require("../services/v2/inventory.service");
 
 // user service import
@@ -77,10 +76,10 @@ inventoryController.createProduct = async (req, res) => {
 // update single item
 inventoryController.updateProduct = async (req, res) => {
   try {
-    const id = req.params.id;
+    const id = req.params?.id;
     const itemDetails = req.body;
-    const userId = req.decode.id;
-    const userMail = req.decode.email;
+    const userId = req.decode?.id;
+    const userMail = req.decode?.email;
 
     // check user is valid or not
     const user = await findUserByIdAndMailService(userId, userMail);

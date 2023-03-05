@@ -31,6 +31,12 @@ userService.findUserByIdService = async (id) => {
   return users[0];
 };
 
+userService.findUserByIdAndMailService = async (id, email) => {
+  const userId = new Types.ObjectId(id);
+  const users = await User.aggregate([{ $match: { _id: userId, email } }]);
+  return users[0];
+};
+
 userService.findUserByAuthIdService = async (authId, email) => {
   const userId = new Types.ObjectId(authId);
   const users = await User.aggregate([{ $match: { _id: userId, email } }]);
