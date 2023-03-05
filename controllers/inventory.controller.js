@@ -20,27 +20,16 @@ const inventoryController = {};
 // get all items
 inventoryController.getProducts = async (req, res) => {
   try {
-    const result = await getProductsService();
+    const email = req?.query?.email;
+    const query = req?.query;
+
+    // user queries and default data
+    const limit = parseInt(query.limit) || 10;
+    const skip = parseInt(query.page) * limit || 0;
+
+    const result = await getProductsService(email, limit, skip);
 
     // check products has or not
-    res.status(200).json({ status: "success", result });
-  } catch (err) {
-    res.status(500).json({ status: "failed", message: err.message });
-  }
-};
-
-// get my or single user items
-inventoryController.myProducts = async (req, res) => {
-  try {
-    const email = req.params.email;
-    const decodeEmail = req.decode.email;
-
-    // check user is valid or not
-    if (email !== decodeEmail) throw new Error("You are not authorized");
-
-    const result = await getMyProductsService(email);
-    if (!result) throw new Error("No products found");
-
     res.status(200).json({ status: "success", result });
   } catch (err) {
     res.status(500).json({ status: "failed", message: err.message });

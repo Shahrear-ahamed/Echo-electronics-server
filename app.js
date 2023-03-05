@@ -38,7 +38,7 @@ app.use(
 
 app.use("/api/v2/user/", userRouter);
 app.use("/api/v2/auth/", OAuthRouter);
-app.use("/api/v2/inventory", inventoryRouter);
+app.use("/api/v2/products", inventoryRouter);
 
 // Routes
 app.use("/", (req, res) => {
