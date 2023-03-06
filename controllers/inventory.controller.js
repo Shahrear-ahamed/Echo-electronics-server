@@ -30,7 +30,7 @@ inventoryController.getProducts = async (req, res) => {
     const result = await getProductsService(email, limit, skip, sort);
 
     // check products has or not
-    res.status(200).json({ status: "success", result });
+    res.status(200).json({ status: "success", ...result });
   } catch (err) {
     res.status(500).json({ status: "failed", message: err.message });
   }

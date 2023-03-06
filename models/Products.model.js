@@ -47,6 +47,12 @@ const productSchema = new Schema(
       maxLength: 1000,
       required: [true, "Description must be required"],
     },
+    sold: {
+      type: Number,
+      trim: true,
+      required: [true, "Sold must be required"],
+      min: 0,
+    },
   },
   { timestamps: true, versionKey: false }
 );

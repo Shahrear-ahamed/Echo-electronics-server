@@ -16,12 +16,26 @@ inventoryService.getProductsService = async (
   const pipeline = supplierMail
     ? [
         { $match: { supplierMail } },
-        { $skip: skip },
-        { $limit: limit },
-        { $sort: sort },
+        {
+          $facet: {
+            dataInfo: [{ $group: { _id: 0, totalData: { $sum: 1 } } }],
+            items: [{ $skip: skip }, { $limit: limit }, { $sort: sort }],
+          },
+        },
       ]
-    : [{ $skip: skip }, { $limit: limit }, { $sort: sort }];
-  return await Product.aggregate(pipeline);
+    : [
+        {
+          $facet: {
+            dataInfo: [{ $group: { _id: 0, totalData: { $sum: 1 } } }],
+            items: [{ $skip: skip }, { $limit: limit }, { $sort: sort }],
+          },
+        },
+      ];
+  const allProducts = await Product.aggregate(pipeline);
+  const products = allProducts[0];
+
+  const pages = Math.ceil(products.dataInfo[0].totalData / limit);
+  return { pages, products: products.items };
 };
 
 // get single item
