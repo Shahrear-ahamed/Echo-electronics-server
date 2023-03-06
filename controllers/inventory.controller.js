@@ -23,10 +23,11 @@ inventoryController.getProducts = async (req, res) => {
     const query = req?.query;
 
     // user queries and default data
-    const limit = parseInt(query.limit) || 10;
-    const skip = parseInt(query.page) * limit || 0;
+    const sort = { createdAt: 1 };
+    const limit = parseInt(query?.limit) || 10;
+    const skip = parseInt(query?.page) * limit || 0;
 
-    const result = await getProductsService(email, limit, skip);
+    const result = await getProductsService(email, limit, skip, sort);
 
     // check products has or not
     res.status(200).json({ status: "success", result });

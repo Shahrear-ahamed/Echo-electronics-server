@@ -10,11 +10,17 @@ const inventoryService = {};
 inventoryService.getProductsService = async (
   supplierMail,
   limit,
-  skip
+  skip,
+  sort
 ) => {
   const pipeline = supplierMail
-    ? [{ $match: { supplierMail } }, { $skip: skip }, { $limit: limit }]
-    : [{ $skip: skip }, { $limit: limit }];
+    ? [
+        { $match: { supplierMail } },
+        { $skip: skip },
+        { $limit: limit },
+        { $sort: sort },
+      ]
+    : [{ $skip: skip }, { $limit: limit }, { $sort: sort }];
   return await Product.aggregate(pipeline);
 };
 
