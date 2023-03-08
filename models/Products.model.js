@@ -53,8 +53,22 @@ const productSchema = new Schema(
       required: [true, "Sold must be required"],
       min: 0,
     },
+    inStock: {
+      type: Boolean,
+      default: true,
+    },
   },
   { timestamps: true, versionKey: false }
 );
+
+productSchema.pre("save", function (next) {
+  if (this.quantity >= 1) {
+    this.inStock = true;
+  } else {
+    this.inStock = false;
+  }
+
+  next();
+});
 
 module.exports = model("Product", productSchema);
