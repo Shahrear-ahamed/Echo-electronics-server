@@ -7,6 +7,7 @@ jwtToken.createToken = (user) => {
     id: user?._id,
     role: user?.role,
     email: user?.email,
+    name: user?.name,
   };
 
   const token = jwt.sign(payload, process.env.JWT_SECRET, {
@@ -14,12 +15,12 @@ jwtToken.createToken = (user) => {
     algorithm: "HS512",
   });
 
-  return `Bearer ${token}`;
+  return token;
 };
 
 jwtToken.verifyToken = (req, res, next) => {
   const userToken = req.headers.authorization;
-  console.log(userToken)
+  console.log(userToken);
   if (!userToken) {
     return res.status(401).send({ message: "Unauthorized Access" });
   }
