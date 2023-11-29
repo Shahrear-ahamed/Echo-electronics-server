@@ -10,7 +10,7 @@ const rateLimit = require("express-rate-limit");
 
 // Routes imports
 const userRouter = require("./routers/v2/user.router");
-// const OAuthRouter = require("./routers/v2/OAuth.router");
+const OAuthRouter = require("./routers/v2/OAuth.router");
 const inventoryRouter = require("./routers/v2/inventory.router");
 const agreementRouter = require("./routers/v2/agreement.route");
 
@@ -38,7 +38,7 @@ app.use(
 // other versions router are here
 
 app.use("/api/v2/users/", userRouter);
-// app.use("/api/v2/auth/", OAuthRouter);
+app.use("/api/v2/auth/", OAuthRouter);
 app.use("/api/v2/inventory/products", inventoryRouter);
 app.use("/api/v2/agreement", agreementRouter);
 
