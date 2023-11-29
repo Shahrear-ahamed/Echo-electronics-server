@@ -19,6 +19,7 @@ userController.createUser = async (req, res) => {
     const userData = req.body;
 
     const result = await createUserService(userData);
+    console.log(result)
 
     // if user already exist throw error
     if (!result) throw new Error("User already exist");

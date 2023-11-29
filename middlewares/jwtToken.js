@@ -19,6 +19,7 @@ jwtToken.createToken = (user) => {
 
 jwtToken.verifyToken = (req, res, next) => {
   const userToken = req.headers.authorization;
+  console.log(userToken)
   if (!userToken) {
     return res.status(401).send({ message: "Unauthorized Access" });
   }
